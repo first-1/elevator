@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.TimeUtils;
 import screens.GameScreen;
 import utils.Assets;
 import utils.Const;
@@ -26,12 +27,14 @@ public class Margine extends Actor {
         }
     };
     ArrayList<Vector2> points;
-    PolygonSpriteBatch pSB;
+    PolygonSpriteBatch pSB = new PolygonSpriteBatch();
     GameScreen gs;
     private int face;
     private float reference;
     private float standardY;
     private float rule;
+    private PolygonRegion toDrawPolygon;
+    private EarClippingTriangulator triangulator = new EarClippingTriangulator();
 
     public Margine(int face, float reference, int rule, GameScreen gs) // face right->1 left->-1, reference its the X axis reference
     {
@@ -47,6 +50,7 @@ public class Margine extends Actor {
             createNewPoint(reference + face * Const.STANDARD_MARGIN.x, standardY);
             standardY = standardY + Const.STANDARD_MARGIN.y/2;
         }
+        updateVertexArray();
     }
 
     public void createNewPoint(float x, float y)
@@ -158,6 +162,23 @@ public class Margine extends Actor {
         return -1;
     }
 
+    private void updateVertexArray()
+    {
+        float[] vertices;
+
+        vertices = new float[points.size()*2+4];
+        vertices[0] = reference - face * 5;
+        vertices[1] = Const.zero - Const.SCREEN_HEIGHT/2;
+        for (int i = 0, pointsSize = points.size(); i < pointsSize; i++) {
+            vertices[2*i+2] = points.get(i).x;
+            vertices[2*i+1+2] = points.get(i).y;
+        }
+        vertices[2*points.size()+2] = reference;
+        vertices[2*points.size()+3] = vertices[2*points.size()+1] + Const.zero;
+
+        toDrawPolygon = new PolygonRegion(Assets.brick, vertices, triangulator.computeTriangles(vertices).toArray());
+    }
+
     @Override
     public void act(float delta)
     {
@@ -166,12 +187,14 @@ public class Margine extends Actor {
             deletePoint(0);
             createRandomPoint();
             createStandardPoint();
+            updateVertexArray();
         }
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha)
     {
+        long g = TimeUtils.millis();
         batch.end();
 //        ShapeRenderer shape = new ShapeRenderer();
 //        shape.setColor(com.badlogic.gdx.graphics.Color.MAGENTA);
@@ -190,23 +213,16 @@ public class Margine extends Actor {
 
 
 //        / draw texture
-        float[] verts = new float[points.size()*2+4];
-        verts[0] = reference - face * 5;
-        verts[1] = Const.zero - Const.SCREEN_HEIGHT/2;
-        for (int i = 0, pointsSize = points.size(); i < pointsSize; i++) {
-            verts[2*i+2] = points.get(i).x;
-            verts[2*i+1+2] = points.get(i).y;
-        }
-        verts[2*points.size()+2] = reference;
-        verts[2*points.size()+3] = verts[2*points.size()+1] + Const.zero;
 
-        pSB = new  PolygonSpriteBatch();
+
+        //pSB = new  PolygonSpriteBatch();
         pSB.setProjectionMatrix(getStage().getCamera().combined);
         pSB.begin();
-        pSB.draw(new PolygonRegion(Assets.brick, verts, new EarClippingTriangulator().computeTriangles(verts).toArray()), 0, 0);
+        pSB.draw(toDrawPolygon, 0, 0);
         pSB.end();
 
         batch.begin();
+        System.out.println("\t" + TimeUtils.timeSinceMillis(g) + " drawing Margine");
     }
 
 }
