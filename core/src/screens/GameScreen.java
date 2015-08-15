@@ -1,31 +1,41 @@
 package screens;
 
-import Actors.BackGround;
-import Actors.Margine;
-import Actors.Protagonist;
+import Actors.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.yahoo.cornelg7.elevator.Elevator;
 import utils.Const;
 import utils.GameListener;
+
+import java.util.ArrayList;
 
 /**
  * Created by Cornel on 16.07.2015.
  */
 public class GameScreen extends MyScreen {
 
+    public GameListener gl;
     Stage stage;
     public Protagonist pro;
     public Margine leftLeft, leftMid, rightMid, rightRight;
     public BackGround bg;
     private int collidedMargin;
+    public ArrayList<Obstacol> obstacole;
+
+    private Group front;
+    public Group back;
 
     public  GameScreen(Elevator elevator)
     {
         super(elevator);
         stage = new Stage();
+        front = new Group();
+        back = new Group();
+        obstacole = new ArrayList<Obstacol>();
+
         pro = new Protagonist(Const.SCREEN_WIDTH/2-Const.PRO_WIDTH/2, Const.SCREEN_HEIGHT/2 - Const.PRO_HEIGHT/2, Const.PRO_WIDTH, Const.PRO_HEIGHT);
         leftLeft = new Margine(1, 0, 0, this);
         leftMid = new Margine(-1, Const.SCREEN_WIDTH/2, 1, this);
@@ -33,19 +43,43 @@ public class GameScreen extends MyScreen {
         rightRight =  new Margine(-1, Const.SCREEN_WIDTH, 3, this);
         bg = new BackGround(0, 0, Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT * 2);
 
-        stage.getCamera().position.set(Const.SCREEN_WIDTH/2, Const.SCREEN_HEIGHT/2, 0);
-        stage.addActor(bg);
-        stage.addActor(pro);
-        stage.addActor(leftLeft);
-        stage.addActor(leftMid);
-        stage.addActor(rightMid);
-        stage.addActor(rightRight);
+        stage.getCamera().position.set(Const.SCREEN_WIDTH / 2, Const.SCREEN_HEIGHT / 2, 0);
+
+
+        stage.addActor(back);
+        stage.addActor(front);
+
+        back.addActor(bg);
+        front.addActor(pro);
+        front.addActor(leftLeft);
+        front.addActor(leftMid);
+        front.addActor(rightMid);
+        front.addActor(rightRight);
+
+        addNewObstacol(0, 30, Const.SCREEN_WIDTH / 2, 8, 1);
+        addNewObstacol(10, 60, Const.SCREEN_WIDTH / 2, 8, 2);
+        addNewObstacol(20, 90, Const.SCREEN_WIDTH / 2, 8, 3);
+        addNewObstacol(30, 120, Const.SCREEN_WIDTH / 2, 8, 4);
+        addNewObstacol(40, 150, Const.SCREEN_WIDTH / 2, 8, 5);
+        addNewObstacol(50, 180, Const.SCREEN_WIDTH / 2, 8, 6);
+        addNewObstacol(60, 210, Const.SCREEN_WIDTH / 2, 8, 7);
+        addNewObstacol(70, 240, Const.SCREEN_WIDTH/2, 8, 0);
+        // todo: addNewObstacol randomized + hitbox
+
+    }
+
+    public void addNewObstacol(float x, float y, float width, float height, int ticks){
+        // 0 == 1 <= ticks <= 6 == 7 == ...
+        Obstacol obstacol = new Obstacol(x, y, width, height, ticks, this);
+        back.addActor(obstacol);
+        obstacole.add(obstacol);
     }
 
     @Override
     public void show()
     {
-        Gdx.input.setInputProcessor(new InputMultiplexer(new GameListener(this), stage));
+        gl = new GameListener(this);
+        Gdx.input.setInputProcessor(new InputMultiplexer(gl, stage));
     }
 
     public boolean proCollides(){

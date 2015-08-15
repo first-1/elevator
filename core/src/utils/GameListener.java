@@ -17,13 +17,16 @@ public class GameListener extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-       touchDown(0, 0, 0, 0);
-        return  true;
+        touchDown(0, 0, 0, 0);
+        return true;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         gS.pro.changeDirection();
+        for (int i = gS.obstacole.size() - 1; i >=0 ; i--) {
+            gS.obstacole.get(i).tick();
+        }
         return false;
     }
 
