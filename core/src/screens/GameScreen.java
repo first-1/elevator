@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.yahoo.cornelg7.elevator.Elevator;
 import utils.Const;
 import utils.GameListener;
+import utils.RandomCreator;
 
 import java.util.ArrayList;
 
@@ -78,6 +79,7 @@ public class GameScreen extends MyScreen {
     @Override
     public void show()
     {
+        RandomCreator.set(this);
         gl = new GameListener(this);
         Gdx.input.setInputProcessor(new InputMultiplexer(gl, stage));
     }
@@ -109,6 +111,16 @@ public class GameScreen extends MyScreen {
         return false;
     }
 
+    // Checking collision with obstacles.
+    // Cool name huh ?
+    public boolean obstaCollides()
+    {
+        for (Obstacol ob : obstacole)
+            if (ob.getBounds().overlaps(pro.getBounds()))
+                return  true;
+        return  false;
+    }
+
     public void gameOver(){
         System.out.println("YOU DIED !! " + collidedMargin);
     }
@@ -116,16 +128,22 @@ public class GameScreen extends MyScreen {
     public void updateGame(){
         // move screen + margins
         Const.zero += Const.GAME_SPEED.y;
+        RandomCreator.update();
 
         // move bg
-        if (bg.getBounds().getY() < Const.zero - Const.SCREEN_HEIGHT + Const.GAME_SPEED.y){
+        if (bg.getBounds().getY() < Const.zero - Const.SCREEN_HEIGHT + Const.GAME_SPEED.y) {
             bg.moveBack();
         }
 
         // check collisions
-        if (proCollides()){
+        if (proCollides()) {
             gameOver();
         }
+
+        if (obstaCollides()) {
+            gameOver();
+        }
+
     }
 
     @Override
