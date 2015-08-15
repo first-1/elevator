@@ -14,6 +14,8 @@ public abstract class Assets {
     public static TextureRegion background;
     public static TextureRegion pro;
     public static TextureRegion brick;
+    public static TextureRegion obstacleExplosion;
+    public static TextureRegion obstacle;
 
     public static void load()
     {
@@ -22,6 +24,9 @@ public abstract class Assets {
         Texture aux = new Texture(Gdx.files.internal("images/brick4.png"));
         aux.setWrap(Repeat, Repeat);
         brick =  new TextureRegion(aux);
+        obstacleExplosion = new TextureRegion(new Texture(Gdx.files.internal("images/obstacleExplosion2.png")));
+        obstacle = new TextureRegion(new Texture(Gdx.files.internal("images/obstacle.png")));
+
     }
 
 }
