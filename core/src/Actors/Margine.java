@@ -81,20 +81,20 @@ public class Margine extends Actor {
 
     public float getXwithRuleForRandomPoint(){
         if (rule == 1) {        /// leftMid 2 crystal size dif max
-            return MathUtils.random(gs.leftLeft.getLastPoint().x + 2.1f * Const.crystalSize, reference);
+            return MathUtils.random(gs.leftLeft.getLastPoint().x + 2.5f * Const.crystalSize, reference);
         }
         if (rule == 2) {        /// rightMid 2 crystal size
-            return MathUtils.random(reference, Const.PRO_WIDTH - 3.9f * Const.crystalSize + gs.leftMid.getLastPoint().x);
+            return MathUtils.random(reference, gs.leftMid.getLastPoint().x + Const.PRO_WIDTH - 3.2f * Const.crystalSize);
         }
         if (rule == 3) {        /// rightRight
-            return MathUtils.random(Math.max(gs.rightMid.getLastPoint().x + 2.1f * Const.crystalSize, gs.leftLeft.getLastPoint().x + Const.PRO_WIDTH + 0.9f * Const.crystalSize), reference);
+            return MathUtils.random(gs.leftLeft.getLastPoint().x + Const.PRO_WIDTH + 1.8f * Const.crystalSize, reference);
         }
         /// leftLeft
-        return MathUtils.random(reference, reference + Const.SCREEN_WIDTH / 2 - 3.9f * Const.crystalSize);
+        return MathUtils.random(reference, reference + 1.9f * Const.crystalSize);
     }
 
     public float getYwithRuleForRandomPoint(){
-        return MathUtils.random(points.get(points.size() - 1).y + 2 * Const.crystalSize, standardY);
+        return MathUtils.random(points.get(points.size() - 1).y + 2.2f * Const.crystalSize, standardY);
     }
 
     public void createRandomPoint()

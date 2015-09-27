@@ -18,6 +18,6 @@ public abstract class Const {
 
     public static Vector2 STANDARD_MARGIN = new Vector2(25, 105);
 
-    public static Vector2 GAME_SPEED = new Vector2(0, 4f);
+    public static Vector2 GAME_SPEED = new Vector2(0, 3f);
 
 }

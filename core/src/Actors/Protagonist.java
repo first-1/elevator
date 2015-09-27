@@ -16,7 +16,7 @@ public class Protagonist extends DynamicActor {
     public Protagonist(float x, float y, float width, float height) {
         super(x, y, width, height);
         setTexture(Assets.pro);
-        setVelocity(2f, 0);
+        setVelocity(1.35f, 0);
     }
                                                             // 1 2
     public Vector2 getCrystalCorner(int side, int corner){  // 0 3
