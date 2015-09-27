@@ -2,6 +2,7 @@ package Actors;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import screens.GameScreen;
@@ -48,6 +49,10 @@ public class Obstacol extends Actor {
         if (animation.getCurrentFrame() >= totalTicks || animation.getCurrentFrame() >= 6){
             explode();
         }
+    }
+
+    public Rectangle getBounds(){
+        return new Rectangle(posX, posY, width, height);
     }
 
     @Override
